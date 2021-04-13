@@ -1,4 +1,6 @@
-streamlit
-watchdog
+folium
 geopandas
 openpyxl
+streamlit
+streamlit-folium
+watchdog
