@@ -12,3 +12,4 @@ https://github.com/EsraaMadi/Map_locations_finder_along_route/blob/master/stream
 https://github.com/nithishr/streamlit-data-viz-demo/blob/main/travel_viz.py
 https://share.streamlit.io/alibama/cville-trees/main
 https://medium.datadriveninvestor.com/recreating-my-project-using-folium-and-streamlit-part-2-8e7668e8924d
+https://towardsdatascience.com/build-a-multi-layer-map-using-streamlit-2b4d44eb28f3
