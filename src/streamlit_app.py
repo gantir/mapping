@@ -1,5 +1,7 @@
 import os
+import random
 from typing import Dict
+from typing import List
 from typing import Tuple
 
 import folium
@@ -9,23 +11,34 @@ import streamlit as st
 from streamlit_folium import folium_static
 
 
+def gen_colours(num_colours: int) -> List[str]:
+    colours = []
+    for inp in range(0, num_colours + 1):
+        random_number = random.randint(2345678, 16777215)
+        hex_number = str(hex(random_number))
+        hex_number = "#" + hex_number[2:]
+        colours.append(hex_number)
+    return colours
+
+
 def prepare_map(map_center: Tuple, other_interest_points: dict, df: pd.DataFrame):
     route_map = folium.Map(location=map_center, zoom_start=11, width="80%", height="80%")
     for location, loc_coordinates in other_interest_points.items():
         folium.Marker(loc_coordinates, color="purple", tooltip=location, radius=3).add_to(route_map)
 
     grouped = df.groupby("Rider")
+    num_riders = len(grouped)
+    colors = gen_colours(num_riders)
+
     for i, rider in enumerate(grouped):
 
-        color = "blue"
         if rider[0].lower() == "unassigned":
             st.write(f"Number of orders {rider[0]}: {len(rider[1])}")
-            color = "red"
 
-        for i, dp in rider[1].iterrows():
+        for j, dp in rider[1].iterrows():
             p = (dp["lat"], dp["lon"])
-            tooltip = f"Order Id:{dp['Order Id']}, Rider: {rider[0]}"
-            folium.RegularPolygonMarker(p, tooltip=tooltip, number_of_sides=i + 2, color=color, radius=3).add_to(
+            tooltip = f" Order Id:{dp['Order Id']}\n Customer: {dp['Name']}\n Rider: {rider[0]}"
+            folium.RegularPolygonMarker(p, tooltip=tooltip, number_of_sides=i + 2, color=colors[i], radius=3).add_to(
                 route_map
             )
 
@@ -47,7 +60,7 @@ def prepare_input_data(file) -> gpd.GeoDataFrame:
     # outliers_lat = pd.Series(data=[12.7093,12.82172,12.8223181])
     # df.drop(df[df["Lat"].isin(outliers_lat)].index, inplace=True)
 
-    df = df[["Order Id", "Lat", "Long", "Rider", "Quantity"]]
+    df = df[["Order Id", "Name", "Lat", "Long", "Rider", "Quantity"]]
     df.rename(columns={"Lat": "lat"}, inplace=True)
     df.rename(columns={"Long": "lon"}, inplace=True)
 
